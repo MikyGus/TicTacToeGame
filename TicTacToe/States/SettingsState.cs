@@ -1,12 +1,13 @@
 ﻿using TicTacToe.Abstract;
 
 namespace TicTacToe.States;
-internal class PlayState : IEngineState
+internal class SettingsState : IEngineState
 {
     public void Activate()
     {
+        // TODO: MOVE THIS TO A RENDERER
         Console.Clear();
-        Console.WriteLine("Play State");
+        Console.WriteLine("SETTINGS");
     }
 
     public void Deactivate()
@@ -20,7 +21,6 @@ internal class PlayState : IEngineState
     public void ProcessInput(ConsoleKeyInfo key)
     {
         if (key.Key == ConsoleKey.Escape)
-            Program.GameEngine.PushState(new MainMenuPausedState());
+            Program.GameEngine.PopState();
     }
 }
-

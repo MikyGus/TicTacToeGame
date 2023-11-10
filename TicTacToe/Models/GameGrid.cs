@@ -1,4 +1,5 @@
 ﻿using TicTacToe.Abstract;
+using TicTacToe.Models.Components;
 
 namespace TicTacToe.Models;
 internal class GameGrid
@@ -6,16 +7,26 @@ internal class GameGrid
     private readonly CellEntity[,] _cells;
     
     private readonly HashSet<IGridSubscriber> _gridSubscribers;
-    public Vector2 CellMarked {  get; private set; }
-    
+    private readonly PlayerTurnEngine _turnEngine;
+
     public Vector2 SizeOfGrid {  get; private set; }
 
     public GameGrid(Vector2 sizeOfGrid)
     {
         SizeOfGrid = sizeOfGrid;
         _cells = new CellEntity[SizeOfGrid.X, SizeOfGrid.Y];
-        CellMarked = new Vector2(0, 0);
         _gridSubscribers = new HashSet<IGridSubscriber>();
+        _turnEngine = new PlayerTurnEngine(
+            new List<IPlayer>
+            {
+                new Player("Player 1", 'X', ConsoleColor.Blue) { },
+                new Player("Player 2", 'O', ConsoleColor.Yellow)
+            });
+    }
+    public Vector2 CellMarked
+    {
+        get => _turnEngine.CurrentPlayer.CurrentMarkerPosition;
+        set => _turnEngine.CurrentPlayer.CurrentMarkerPosition = value;
     }
 
     public IEnumerable<CellEntity> Cells()
@@ -35,18 +46,14 @@ internal class GameGrid
         }
     }
 
-    public void AddSprite(CellEntity cellEntity, Vector2 position)
+    public void SetSprite()
     {
-        //if (_cells[position.X, position.Y] is not null)
-        //    throw new ArgumentException("Position is not empty");
-        if (IsInGrid(position) == false)
-            throw new ArgumentException("Position is outside set grid");
-        if (cellEntity is null)
-            throw new ArgumentNullException(nameof(cellEntity), string.Format("{0} needs to contain a marker.", nameof(cellEntity)));
-        if (IsPositionUsed(position))
-            return;
-        
-        _cells[position.X, position.Y] = cellEntity;
+        var cellEntity = new CellEntity(_turnEngine.CurrentPlayer.SpriteComponent) 
+        { 
+            Position = CellMarked
+        };
+
+        _cells[CellMarked.X, CellMarked.Y] = cellEntity;
 
         foreach (IGridSubscriber subscriber in _gridSubscribers)
             subscriber.OnCellSet(CellMarked, cellEntity.GetComponent());

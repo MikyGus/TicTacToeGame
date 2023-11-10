@@ -31,6 +31,7 @@ internal class PlayState : IEngineState
 
     public void ProcessInput(ConsoleKeyInfo key)
     {
+        //TODO: Change 'mark' to movedirection, so we can have Cellmarked private in GameGrid
         var mark = _gameGrid.CellMarked;
         if (key.Key == ConsoleKey.Escape)
             Program.GameEngine.PushState(new MainMenuPausedState());
@@ -44,14 +45,15 @@ internal class PlayState : IEngineState
             _gameGrid.MoveCellMarker(new Vector2(mark.X, mark.Y + 1));
         else if (key.Key == ConsoleKey.E)
         {
-            var cellEntity = new CellEntity(new SpriteComponent()
-            {
-                Sprite = 'X',
-                Parent = null,
-                SpriteColor = ConsoleColor.Blue
-            })
-            { Position = mark };
-            _gameGrid.AddSprite(cellEntity,mark);
+            //var cellEntity = new CellEntity(new SpriteComponent()
+            //{
+            //    Sprite = 'X',
+            //    Parent = null,
+            //    SpriteColor = ConsoleColor.Blue
+            //})
+            //{ Position = mark };
+            //_gameGrid.AddSprite(cellEntity,mark);
+            _gameGrid.SetSprite();
         }
 
     }

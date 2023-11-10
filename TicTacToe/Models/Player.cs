@@ -6,7 +6,7 @@ internal class Player : IPlayer
 {
     public SpriteComponent SpriteComponent { get; init; }
     public string Name { get; init; }
-    public Vector2 CurrentMarkerPosition { get; set; }
+    public Vector2 CurrentMarkerPosition { get; set; } = new(0, 0);
 
     public Player(string name, char sprite, ConsoleColor color)
     {

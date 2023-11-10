@@ -6,5 +6,5 @@ internal interface IPlayer
 {
     SpriteComponent SpriteComponent { get; }
     string Name { get; }
-    Vector2 CurrentMarkerPosition { get; }
+    Vector2 CurrentMarkerPosition { get; set; }
 }

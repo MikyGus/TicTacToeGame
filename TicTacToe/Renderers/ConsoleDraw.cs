@@ -18,8 +18,8 @@ internal static class ConsoleDraw
         Console.SetCursorPosition(position.X, position.Y);
         Console.Write(spriteComponent.Sprite);
 
-        Console.ForegroundColor = tempBackgroundColor;
-        Console.BackgroundColor = tempFontColor;
+        Console.BackgroundColor = tempBackgroundColor;
+        Console.ForegroundColor = tempFontColor;
     }
 
     public static void Border(Vector2 startPosition, Vector2 gridSize)

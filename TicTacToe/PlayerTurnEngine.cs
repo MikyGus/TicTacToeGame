@@ -11,6 +11,7 @@ internal class PlayerTurnEngine
                 _playerQueue.Enqueue(p);
             else
                 throw new ArgumentNullException(nameof(p));
+
         if (_playerQueue.Count < 2)
             throw new ArgumentException($"Need a minimum of two players, have only {_playerQueue.Count}");
     }

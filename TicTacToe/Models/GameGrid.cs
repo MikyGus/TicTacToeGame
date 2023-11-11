@@ -1,4 +1,5 @@
 ﻿using TicTacToe.Abstract;
+using TicTacToe.Factories;
 using TicTacToe.Models.Components;
 
 namespace TicTacToe.Models;
@@ -48,29 +49,30 @@ internal class GameGrid
 
     public void SetSprite()
     {
-        var cellEntity = new CellEntity(_turnEngine.CurrentPlayer.SpriteComponent) 
-        { 
-            Position = CellMarked
-        };
+        if (IsPositionUsed(CellMarked))
+            return;
+
+        var cellEntity = new CellEntity() { Position = CellMarked };
+        var spriteComponent = ComponentFactory.SpriteComponent(_turnEngine.CurrentPlayer);
+        cellEntity.AddComponent(spriteComponent);
 
         _cells[CellMarked.X, CellMarked.Y] = cellEntity;
 
+        var sprite = cellEntity.GetComponent<SpriteComponent>();
         foreach (IGridSubscriber subscriber in _gridSubscribers)
-            subscriber.OnCellSet(CellMarked, cellEntity.GetComponent());
+            subscriber.OnCellSet(CellMarked, sprite);
     }
 
-
-
-    public void AddSubsriber(IGridSubscriber subscriber) 
+    public void AddSubscriber(IGridSubscriber subscriber) 
     {
         if (_gridSubscribers.Add(subscriber) == false)
-            throw new ArgumentException("The subscriber have already been added!");
+            throw new ArgumentException($"The subscriber {nameof(subscriber)} have already been added!");
     }
 
     public void RemoveSubscriber(IGridSubscriber subscriber)
     {
         if (_gridSubscribers.Remove(subscriber) == false)
-            throw new ArgumentException("Could not remove subscriber, not subscribed.");
+            throw new ArgumentException($"Could not remove {nameof(subscriber)}, not subscribed.");
     }
 
 
@@ -79,5 +81,5 @@ internal class GameGrid
         => (position.X >= 0 && position.Y >= 0 &&
             position.X < SizeOfGrid.X && position.Y < SizeOfGrid.Y);
 
-    public bool IsPositionUsed(Vector2 position) => (_cells[position.X, position.Y] is not null);
+    private bool IsPositionUsed(Vector2 position) => (_cells[position.X, position.Y] is not null);
 }

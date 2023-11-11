@@ -1,6 +1,5 @@
 ﻿using TicTacToe.Abstract;
 using TicTacToe.Models;
-using TicTacToe.Models.Components;
 using TicTacToe.Renderers;
 
 namespace TicTacToe.States;
@@ -13,7 +12,7 @@ internal class PlayState : IEngineState
     {
         _gameGrid = new GameGrid(new Vector2(50,30));
         _renderer = new PlayRenderer(_gameGrid);
-        _gameGrid.AddSubsriber(_renderer);
+        _gameGrid.AddSubscriber(_renderer);
     }
     public void Activate()
     {
@@ -44,18 +43,7 @@ internal class PlayState : IEngineState
         else if (key.Key == ConsoleKey.S)
             _gameGrid.MoveCellMarker(new Vector2(mark.X, mark.Y + 1));
         else if (key.Key == ConsoleKey.E)
-        {
-            //var cellEntity = new CellEntity(new SpriteComponent()
-            //{
-            //    Sprite = 'X',
-            //    Parent = null,
-            //    SpriteColor = ConsoleColor.Blue
-            //})
-            //{ Position = mark };
-            //_gameGrid.AddSprite(cellEntity,mark);
             _gameGrid.SetSprite();
-        }
-
     }
 }
 

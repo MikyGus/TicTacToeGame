@@ -3,5 +3,6 @@
 namespace TicTacToe.Abstract;
 internal class Component : IComponent
 {
-    public IPlayer Parent { get; set; }
+    public CellEntity Parent { get; set; }
+    public IPlayer Owner { get; init; }
 }

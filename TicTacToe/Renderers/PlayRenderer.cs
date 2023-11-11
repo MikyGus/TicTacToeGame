@@ -16,9 +16,9 @@ internal class PlayRenderer : IGridSubscriber
 
         foreach (CellEntity cell in _gameGrid.Cells())
         {
-            var component = cell.GetComponent();
-            if (component is SpriteComponent spriteComponent)
-                _spriteBuffer[cell.Position.X, cell.Position.Y] = spriteComponent;
+            var component = cell.GetComponent<SpriteComponent>();
+            if (component is not null)
+                _spriteBuffer[cell.Position.X, cell.Position.Y] = component;
         }
     }
 

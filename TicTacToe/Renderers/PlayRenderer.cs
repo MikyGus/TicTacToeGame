@@ -47,4 +47,9 @@ internal class PlayRenderer : IGridSubscriber
         ConsoleDraw.WriteAtPosition(position, spriteComponent, ConsoleColor.Gray);
         _spriteBuffer[position.X, position.Y] = spriteComponent;
     }
+
+    public void OnNextPlayer(IPlayer oldPlayer, IPlayer newPlayer)
+    {
+        
+    }
 }

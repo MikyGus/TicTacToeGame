@@ -6,4 +6,5 @@ internal interface IGridSubscriber
 {
     void OnMarkedCellMoved(Vector2 oldPosition, Vector2 newPosition);
     void OnCellSet(Vector2 position, SpriteComponent spriteComponent);
+    void OnNextPlayer(IPlayer oldPlayer, IPlayer newPlayer);
 }

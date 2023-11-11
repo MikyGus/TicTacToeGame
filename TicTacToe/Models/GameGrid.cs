@@ -27,7 +27,7 @@ internal class GameGrid
     public Vector2 CellMarked
     {
         get => _turnEngine.CurrentPlayer.CurrentMarkerPosition;
-        set => _turnEngine.CurrentPlayer.CurrentMarkerPosition = value;
+        private set => _turnEngine.CurrentPlayer.CurrentMarkerPosition = value;
     }
 
     public IEnumerable<CellEntity> Cells()
@@ -61,8 +61,23 @@ internal class GameGrid
         var sprite = cellEntity.GetComponent<SpriteComponent>();
         foreach (IGridSubscriber subscriber in _gridSubscribers)
             subscriber.OnCellSet(CellMarked, sprite);
+
+        MoveToNextPlayer();
     }
 
+    private void MoveToNextPlayer()
+    {
+        var oldPlayer = _turnEngine.CurrentPlayer;
+        var newPlayer = _turnEngine.NextPlayer();
+
+        foreach (IGridSubscriber subscriber in _gridSubscribers)
+            subscriber.OnNextPlayer(oldPlayer, newPlayer);
+    }
+
+
+
+    // ***********************************
+    // Subscribers
     public void AddSubscriber(IGridSubscriber subscriber) 
     {
         if (_gridSubscribers.Add(subscriber) == false)
@@ -74,7 +89,7 @@ internal class GameGrid
         if (_gridSubscribers.Remove(subscriber) == false)
             throw new ArgumentException($"Could not remove {nameof(subscriber)}, not subscribed.");
     }
-
+    // ***********************************
 
 
     private bool IsInGrid(Vector2 position)

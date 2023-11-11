@@ -25,6 +25,8 @@ internal class GameGrid
             });
     }
 
+    public IPlayer CurrentPlayer() => _turnEngine.CurrentPlayer;
+
     public IEnumerable<CellEntity> Cells()
     {
         foreach (var cell in _cells)

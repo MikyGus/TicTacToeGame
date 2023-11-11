@@ -30,18 +30,16 @@ internal class PlayState : IEngineState
 
     public void ProcessInput(ConsoleKeyInfo key)
     {
-        //TODO: Change 'mark' to movedirection, so we can have Cellmarked private in GameGrid
-        var mark = _gameGrid.CellMarked;
         if (key.Key == ConsoleKey.Escape)
             Program.GameEngine.PushState(new MainMenuPausedState());
         else if (key.Key == ConsoleKey.A)
-            _gameGrid.MoveCellMarker(new Vector2(mark.X - 1, mark.Y));
+            _gameGrid.MoveCellMarker(Vector2.LEFT);
         else if (key.Key == ConsoleKey.W)
-            _gameGrid.MoveCellMarker(new Vector2(mark.X, mark.Y - 1));
+            _gameGrid.MoveCellMarker(Vector2.UP);
         else if (key.Key == ConsoleKey.D)
-            _gameGrid.MoveCellMarker(new Vector2(mark.X + 1, mark.Y));
+            _gameGrid.MoveCellMarker(Vector2.RIGHT);
         else if (key.Key == ConsoleKey.S)
-            _gameGrid.MoveCellMarker(new Vector2(mark.X, mark.Y + 1));
+            _gameGrid.MoveCellMarker(Vector2.DOWN);
         else if (key.Key == ConsoleKey.E)
             _gameGrid.SetSprite();
     }

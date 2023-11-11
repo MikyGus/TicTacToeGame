@@ -6,7 +6,7 @@ internal class Player : IPlayer
     public string Name { get; init; }
     public char Sprite { get; init; }
     public ConsoleColor SpriteColor { get; init; }
-    public Vector2 CurrentMarkerPosition { get; set; } = new(0, 0);
+    public Vector2 MarkerPosition { get; set; } = new(0, 0);
 
     public Player(string name, char sprite, ConsoleColor color)
     {

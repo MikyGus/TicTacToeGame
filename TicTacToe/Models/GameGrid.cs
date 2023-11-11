@@ -24,11 +24,6 @@ internal class GameGrid
                 new Player("Player 2", 'O', ConsoleColor.Yellow)
             });
     }
-    public Vector2 CellMarked
-    {
-        get => _turnEngine.CurrentPlayer.CurrentMarkerPosition;
-        private set => _turnEngine.CurrentPlayer.CurrentMarkerPosition = value;
-    }
 
     public IEnumerable<CellEntity> Cells()
     {
@@ -37,30 +32,32 @@ internal class GameGrid
                 yield return cell;
     }
 
-    public void MoveCellMarker(Vector2 newPosition)
+    public void MoveCellMarker(Vector2 moveDirection)
     {
+        var newPosition = _turnEngine.CurrentPlayer.MarkerPosition + moveDirection;
+
         if (IsInGrid(newPosition))
         {
             foreach (IGridSubscriber subscriber in _gridSubscribers)
-                subscriber.OnMarkedCellMoved(CellMarked, newPosition);
-            CellMarked = newPosition;
+                subscriber.OnMarkedCellMoved(_turnEngine.CurrentPlayer.MarkerPosition, newPosition);
+            _turnEngine.CurrentPlayer.MarkerPosition = newPosition;
         }
     }
 
     public void SetSprite()
     {
-        if (IsPositionUsed(CellMarked))
+        if (IsPositionUsed(_turnEngine.CurrentPlayer.MarkerPosition))
             return;
 
-        var cellEntity = new CellEntity() { Position = CellMarked };
+        var cellEntity = new CellEntity() { Position = _turnEngine.CurrentPlayer.MarkerPosition };
         var spriteComponent = ComponentFactory.SpriteComponent(_turnEngine.CurrentPlayer);
         cellEntity.AddComponent(spriteComponent);
 
-        _cells[CellMarked.X, CellMarked.Y] = cellEntity;
+        _cells[_turnEngine.CurrentPlayer.MarkerPosition.X, _turnEngine.CurrentPlayer.MarkerPosition.Y] = cellEntity;
 
         var sprite = cellEntity.GetComponent<SpriteComponent>();
         foreach (IGridSubscriber subscriber in _gridSubscribers)
-            subscriber.OnCellSet(CellMarked, sprite);
+            subscriber.OnCellSet(_turnEngine.CurrentPlayer.MarkerPosition, sprite);
 
         MoveToNextPlayer();
     }

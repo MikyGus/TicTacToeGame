@@ -35,15 +35,13 @@ internal class PlayRenderer : IGridSubscriber
         Console.WriteLine("Play State");
 
         ConsoleDraw.Border(_borderOffset, _borderSize, _gameGrid.CurrentPlayer().SpriteColor);
+        DrawAllSprites();
     }
 
     public void OnMarkedCellMoved(Vector2 oldPosition, Vector2 newPosition)
     {
-        var spriteComponentOld = _spriteBuffer[oldPosition.X, oldPosition.Y] ?? _emptySpriteComponent;
-        ConsoleDraw.WriteAtPosition(oldPosition + _positionOffset, spriteComponentOld, ConsoleColor.Gray);
-
-        var spriteComponentNew = _spriteBuffer[newPosition.X, newPosition.Y] ?? _emptySpriteComponent;
-        ConsoleDraw.WriteAtPosition(newPosition + _positionOffset, spriteComponentNew, ConsoleColor.Red);
+        ClearMarkerAtPosition(oldPosition);
+        DrawMarkerAtPosition(newPosition);
     }
 
     public void OnCellSet(Vector2 position, SpriteComponent spriteComponent)
@@ -55,5 +53,34 @@ internal class PlayRenderer : IGridSubscriber
     public void OnNextPlayer(IPlayer oldPlayer, IPlayer newPlayer)
     {
         ConsoleDraw.Border(_borderOffset, _borderSize, _gameGrid.CurrentPlayer().SpriteColor);
+        DrawMarkerAtPosition(_gameGrid.CurrentPlayer().MarkerPosition);
+    }
+
+    private void DrawMarkerAtPosition(Vector2 position)
+    {
+        var color = _spriteBuffer[position.X, position.Y] is not null ? ConsoleColor.Red : ConsoleColor.Green;
+        var spriteComponent = _spriteBuffer[position.X, position.Y] is not null
+            ? _spriteBuffer[position.X, position.Y]
+            : _emptySpriteComponent;
+        ConsoleDraw.WriteAtPosition(position + _positionOffset, spriteComponent, color);
+    }
+
+    private void ClearMarkerAtPosition(Vector2 position)
+    {
+        var spriteComponent = _spriteBuffer[position.X, position.Y] is not null
+            ? _spriteBuffer[position.X, position.Y]
+            : _emptySpriteComponent;
+        ConsoleDraw.WriteAtPosition(position + _positionOffset, spriteComponent, ConsoleColor.Gray);
+    }
+
+    private void DrawAllSprites()
+    {
+        var markedPosition = _gameGrid.CurrentPlayer().MarkerPosition;
+        foreach (SpriteComponent sprite in _spriteBuffer)
+            if (sprite is not null)
+            {
+                ConsoleColor bgColor = markedPosition.Equals(sprite.Parent.Position) ? ConsoleColor.Red : ConsoleColor.Gray;
+                ConsoleDraw.WriteAtPosition(sprite.Parent.Position + _positionOffset, sprite, bgColor);
+            }
     }
 }

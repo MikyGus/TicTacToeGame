@@ -1,5 +1,5 @@
 ﻿namespace TicTacToe.Models;
-internal class Vector2
+internal class Vector2 : IEquatable<Vector2>
 {
     public int X { get; set; }
     public int Y { get; set; }
@@ -20,4 +20,31 @@ internal class Vector2
     public static Vector2 DOWN => new(0, 1);
     public static Vector2 LEFT => new(-1, 0);
     public static Vector2 RIGHT => new(1, 0);
+
+    public bool Equals(Vector2 other)
+    {
+        if (other is null)
+            return false;
+        if (ReferenceEquals(this, other))
+            return true;
+        return X == other.X && Y == other.Y;
+    }
+
+    public override bool Equals(object other)
+    {
+        if (other is null)
+            return false;
+        if (ReferenceEquals(this, other))
+            return true;
+        return other is Vector2 vector2 && Equals(vector2);
+    }
+
+    public static bool operator ==(Vector2 left, Vector2 right)
+        => left.Equals(right);
+
+    public static bool operator !=(Vector2 left, Vector2 right)
+        => left.Equals(right) == false;
+
+    public override int GetHashCode() => HashCode.Combine(X, Y);
+
 }

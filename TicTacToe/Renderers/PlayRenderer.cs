@@ -56,9 +56,11 @@ internal class PlayRenderer : IGridSubscriber
         DrawMarkerAtPosition(_gameGrid.CurrentPlayer().MarkerPosition);
     }
 
+
+
     private void DrawMarkerAtPosition(Vector2 position)
     {
-        var color = _spriteBuffer[position.X, position.Y] is not null ? ConsoleColor.Red : ConsoleColor.Green;
+        var color = _gameGrid.MaySetAtPosition(position) ? ConsoleColor.Green : ConsoleColor.Red;
         var spriteComponent = _spriteBuffer[position.X, position.Y] is not null
             ? _spriteBuffer[position.X, position.Y]
             : _emptySpriteComponent;
@@ -75,12 +77,14 @@ internal class PlayRenderer : IGridSubscriber
 
     private void DrawAllSprites()
     {
-        var markedPosition = _gameGrid.CurrentPlayer().MarkerPosition;
         foreach (SpriteComponent sprite in _spriteBuffer)
             if (sprite is not null)
-            {
-                ConsoleColor bgColor = markedPosition.Equals(sprite.Parent.Position) ? ConsoleColor.Red : ConsoleColor.Gray;
-                ConsoleDraw.WriteAtPosition(sprite.Parent.Position + _positionOffset, sprite, bgColor);
-            }
+                ConsoleDraw.WriteAtPosition(sprite.Parent.Position + _positionOffset, sprite, ConsoleColor.Gray);
+
+        DrawMarkerAtPosition(_gameGrid.CurrentPlayer().MarkerPosition);
     }
+
+
+
+
 }

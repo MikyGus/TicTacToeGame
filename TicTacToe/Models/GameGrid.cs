@@ -6,7 +6,7 @@ namespace TicTacToe.Models;
 internal class GameGrid
 {
     private readonly CellEntity[,] _cells;
-    
+    private bool _havePlacedFirstMark = false;
     private readonly HashSet<IGridSubscriber> _gridSubscribers;
     private readonly PlayerTurnEngine _turnEngine;
 
@@ -48,7 +48,7 @@ internal class GameGrid
 
     public void SetSprite()
     {
-        if (IsPositionUsed(_turnEngine.CurrentPlayer.MarkerPosition))
+        if (MaySetAtPosition(_turnEngine.CurrentPlayer.MarkerPosition) == false)
             return;
 
         var cellEntity = new CellEntity() { Position = _turnEngine.CurrentPlayer.MarkerPosition };
@@ -61,6 +61,7 @@ internal class GameGrid
         foreach (IGridSubscriber subscriber in _gridSubscribers)
             subscriber.OnCellSet(_turnEngine.CurrentPlayer.MarkerPosition, sprite);
 
+        _havePlacedFirstMark = true;
         MoveToNextPlayer();
     }
 
@@ -96,4 +97,33 @@ internal class GameGrid
             position.X < SizeOfGrid.X && position.Y < SizeOfGrid.Y);
 
     private bool IsPositionUsed(Vector2 position) => (_cells[position.X, position.Y] is not null);
+
+    public bool MaySetAtPosition(Vector2 position)
+    {
+        if (IsInGrid(position) == false)
+            return false;
+        if (_havePlacedFirstMark == false)
+            return true;
+        if (IsPositionUsed(position) == true)
+            return false;
+
+        var positionsToCheck = new List<Vector2>()
+        {
+            position + Vector2.LEFT,
+            position + Vector2.RIGHT,
+            position + Vector2.DOWN,
+            position + Vector2.UP,
+            position + Vector2.LEFT + Vector2.UP,
+            position + Vector2.LEFT + Vector2.DOWN,
+            position + Vector2.RIGHT + Vector2.UP,
+            position + Vector2.RIGHT + Vector2.DOWN,
+        };
+        foreach (var pos in positionsToCheck)
+        {
+            if (IsInGrid(pos) && _cells[pos.X, pos.Y] is not null)
+                return true;
+        }
+        return false;
+    }
+    
 }

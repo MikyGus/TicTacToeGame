@@ -53,7 +53,9 @@ internal class GameGrid
 
         var cellEntity = new CellEntity() { Position = _turnEngine.CurrentPlayer.MarkerPosition };
         var spriteComponent = ComponentFactory.SpriteComponent(_turnEngine.CurrentPlayer);
+        var playerComponent = ComponentFactory.PlayerComponent(_turnEngine.CurrentPlayer);
         cellEntity.AddComponent(spriteComponent);
+        cellEntity.AddComponent(playerComponent);
 
         _cells[_turnEngine.CurrentPlayer.MarkerPosition.X, _turnEngine.CurrentPlayer.MarkerPosition.Y] = cellEntity;
 

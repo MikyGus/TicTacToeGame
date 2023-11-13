@@ -4,5 +4,5 @@ namespace TicTacToe.Abstract;
 internal interface IComponent
 {
     CellEntity Parent { get; set; }
-    IPlayer Owner { get; init; }
+    //IPlayer Owner { get; init; }
 }

@@ -8,6 +8,9 @@ internal class Program
 
     internal static void Main()
     {
+        Console.CursorVisible = false;
+        Console.Title = "TicTacToe";
+
         GameEngine = new StateEngine();
         GameEngine.PushState(new MainMenuState());
 

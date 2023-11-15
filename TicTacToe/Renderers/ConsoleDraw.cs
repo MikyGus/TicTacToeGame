@@ -22,6 +22,17 @@ internal static class ConsoleDraw
         Console.ForegroundColor = tempFontColor;
     }
 
+    public static void WriteBackgroundAtPosition(Vector2 position, MaySetMarkerComponent markerComponent)
+    {
+        var tempBackgroundColor = Console.BackgroundColor;
+        Console.BackgroundColor = markerComponent.BackgroundColor;
+
+        Console.SetCursorPosition(position.X, position.Y);
+        Console.Write(' ');
+
+        Console.BackgroundColor = tempBackgroundColor;
+    }
+
     public static void Border(Vector2 startPosition, Vector2 gridSize)
         => Border(startPosition, gridSize, ConsoleColor.Black);
     public static void Border(Vector2 startPosition, Vector2 gridSize, ConsoleColor borderColor)

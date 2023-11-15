@@ -1,5 +1,4 @@
 ﻿using TicTacToe.Abstract;
-using TicTacToe.Models;
 using TicTacToe.Models.Components;
 
 namespace TicTacToe.Factories;
@@ -10,11 +9,19 @@ internal static class ComponentFactory
         Sprite = player.Sprite,
         SpriteColor = player.SpriteColor,
         Parent = null,
-        //Owner = player
     };
 
     public static PlayerComponent PlayerComponent(IPlayer player) => new()
     {
         Player = player,
+        Parent = null,
     };
+
+    public static MaySetMarkerComponent MaySetMarkerComponent() => new()
+    {
+        BackgroundColor = ConsoleColor.DarkGreen,
+        MaySetInCell = true,
+        Parent = null,
+    };
+
 }

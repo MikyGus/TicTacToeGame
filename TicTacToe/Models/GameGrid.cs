@@ -20,20 +20,12 @@ internal class GameGrid
         _turnEngine = new PlayerTurnEngine(
             new List<IPlayer>
             {
-                new Player("Player 1", 'X', ConsoleColor.Blue) { },
+                new Player("Player 1", 'X', ConsoleColor.Blue),
                 new Player("Player 2", 'O', ConsoleColor.Yellow)
             });
     }
 
-    public IPlayer CurrentPlayer() => _turnEngine.CurrentPlayer;
-
-    public IEnumerable<CellEntity> Cells()
-    {
-        foreach (var cell in _cells)
-            if (cell is not null)
-                yield return cell;
-    }
-
+    #region Actions to notify Subscribers
     public void MoveCellMarker(Vector2 moveDirection)
     {
         var newPosition = _turnEngine.CurrentPlayer.MarkerPosition + moveDirection;
@@ -64,6 +56,7 @@ internal class GameGrid
             subscriber.OnCellSet(_turnEngine.CurrentPlayer.MarkerPosition, sprite);
 
         _havePlacedFirstMark = true;
+        SetMaySetMarkComponents(_turnEngine.CurrentPlayer.MarkerPosition);
         MoveToNextPlayer();
     }
 
@@ -75,11 +68,9 @@ internal class GameGrid
         foreach (IGridSubscriber subscriber in _gridSubscribers)
             subscriber.OnNextPlayer(oldPlayer, newPlayer);
     }
+    #endregion
 
-
-
-    // ***********************************
-    // Subscribers
+    #region Subscribers Add and remove
     public void AddSubscriber(IGridSubscriber subscriber) 
     {
         if (_gridSubscribers.Add(subscriber) == false)
@@ -91,14 +82,31 @@ internal class GameGrid
         if (_gridSubscribers.Remove(subscriber) == false)
             throw new ArgumentException($"Could not remove {nameof(subscriber)}, not subscribed.");
     }
-    // ***********************************
+    #endregion
 
+    #region Helper Methods for subscriber classes
+    public IEnumerable<CellEntity> Cells()
+    {
+        foreach (var cell in _cells)
+            if (cell is not null)
+                yield return cell;
+    }
 
-    private bool IsInGrid(Vector2 position)
+    public IPlayer CurrentPlayer() => _turnEngine.CurrentPlayer;
+
+    public IEnumerable<MaySetMarkerComponent> GetAllMaySetMarkerComponents()
+    {
+        foreach (CellEntity entity in _cells)
+        {
+            var component = entity?.GetComponent<MaySetMarkerComponent>();
+            if (component is not null)
+                yield return component;
+        }
+    }
+
+    public bool IsInGrid(Vector2 position)
         => (position.X >= 0 && position.Y >= 0 &&
             position.X < SizeOfGrid.X && position.Y < SizeOfGrid.Y);
-
-    private bool IsPositionUsed(Vector2 position) => (_cells[position.X, position.Y] is not null);
 
     public bool MaySetAtPosition(Vector2 position)
     {
@@ -106,26 +114,41 @@ internal class GameGrid
             return false;
         if (_havePlacedFirstMark == false)
             return true;
-        if (IsPositionUsed(position) == true)
-            return false;
-
-        var positionsToCheck = new List<Vector2>()
-        {
-            position + Vector2.LEFT,
-            position + Vector2.RIGHT,
-            position + Vector2.DOWN,
-            position + Vector2.UP,
-            position + Vector2.LEFT + Vector2.UP,
-            position + Vector2.LEFT + Vector2.DOWN,
-            position + Vector2.RIGHT + Vector2.UP,
-            position + Vector2.RIGHT + Vector2.DOWN,
-        };
-        foreach (var pos in positionsToCheck)
-        {
-            if (IsInGrid(pos) && _cells[pos.X, pos.Y] is not null)
-                return true;
-        }
-        return false;
+        return Cell(position)?.GetComponent<MaySetMarkerComponent>() is not null;
     }
-    
+    #endregion
+
+    #region Internal Helper Functions
+    private CellEntity Cell(Vector2 position) => _cells[position.X, position.Y];
+
+    private bool IsPositionUsed(Vector2 position)
+        => Cell(position)?.GetComponent<PlayerComponent>() is not null;
+
+    private void SetMaySetMarkComponents(Vector2 position)
+    {
+        var component = Cell(position)?.GetComponent<MaySetMarkerComponent>();
+        if (component is not null)
+            Cell(position).RemoveComponent(component);
+
+        foreach (Vector2 pos in position.Neighbours())
+        {
+            if (IsInGrid(pos) == false)
+                continue;
+            if (IsPositionUsed(pos))
+                continue;
+            var maySetMarkerComponent = Cell(pos)?.GetComponent<MaySetMarkerComponent>();
+            if (maySetMarkerComponent is null)
+                if (Cell(pos) is CellEntity entity)
+                {
+                    entity.AddComponent(ComponentFactory.MaySetMarkerComponent());
+                }
+                else
+                {
+                    _cells[pos.X, pos.Y] = new CellEntity() { Position = pos };
+                    Cell(pos).AddComponent(ComponentFactory.MaySetMarkerComponent());
+                }
+        }
+    }
+    #endregion
+
 }

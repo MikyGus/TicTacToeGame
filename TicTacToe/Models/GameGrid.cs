@@ -9,6 +9,7 @@ internal class GameGrid
     private bool _havePlacedFirstMark = false;
     private readonly HashSet<IGridSubscriber> _gridSubscribers;
     private readonly PlayerTurnEngine _turnEngine;
+    private readonly IPlayer _nullPlayer;
 
     public Vector2 SizeOfGrid {  get; private set; }
 
@@ -23,6 +24,7 @@ internal class GameGrid
                 new Player("Player 1", 'X', ConsoleColor.Blue),
                 new Player("Player 2", 'O', ConsoleColor.Yellow)
             });
+        _nullPlayer = new Player("No player found", ' ', ConsoleColor.Black);
     }
 
     #region Actions to notify Subscribers
@@ -90,6 +92,14 @@ internal class GameGrid
         foreach (var cell in _cells)
             if (cell is not null)
                 yield return cell;
+    }
+
+    public IPlayer PlayerAtPosition(Vector2 position)
+    {
+        if (IsInGrid(position) == false)
+            return _nullPlayer;
+        
+        return Cell(position)?.GetComponent<PlayerComponent>()?.Player ?? _nullPlayer;
     }
 
     public IPlayer CurrentPlayer() => _turnEngine.CurrentPlayer;

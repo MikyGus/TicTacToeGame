@@ -4,22 +4,22 @@ using TicTacToe.Models.Components;
 namespace TicTacToe.Renderers;
 internal static class ConsoleDraw
 {
-    public static void WriteAtPosition(Vector2 position, SpriteComponent spriteComponent)
-    {
-        WriteAtPosition(position, spriteComponent, Console.BackgroundColor);
-    }
-    public static void WriteAtPosition(Vector2 position, SpriteComponent spriteComponent, ConsoleColor backgroundColor)
+    public static void WriteAtPosition(Vector2 position, string text, ConsoleColor fgColor, ConsoleColor bgColor)
     {
         var tempBackgroundColor = Console.BackgroundColor;
         var tempFontColor = Console.ForegroundColor;
-        Console.BackgroundColor = backgroundColor;
-        Console.ForegroundColor = spriteComponent.SpriteColor;
+        Console.BackgroundColor = bgColor;
+        Console.ForegroundColor = fgColor;
 
         Console.SetCursorPosition(position.X, position.Y);
-        Console.Write(spriteComponent.Sprite);
+        Console.Write(text);
 
         Console.BackgroundColor = tempBackgroundColor;
         Console.ForegroundColor = tempFontColor;
+    }
+    public static void WriteAtPosition(Vector2 position, SpriteComponent spriteComponent, ConsoleColor backgroundColor)
+    {
+        WriteAtPosition(position, spriteComponent.Sprite.ToString(), spriteComponent.SpriteColor, backgroundColor);
     }
 
     public static void WriteBackgroundAtPosition(Vector2 position, MaySetMarkerComponent markerComponent)
@@ -32,6 +32,7 @@ internal static class ConsoleDraw
 
         Console.BackgroundColor = tempBackgroundColor;
     }
+
 
     public static void Border(Vector2 startPosition, Vector2 gridSize)
         => Border(startPosition, gridSize, ConsoleColor.Black);

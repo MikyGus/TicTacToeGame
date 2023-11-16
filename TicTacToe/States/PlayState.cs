@@ -6,14 +6,17 @@ using TicTacToe.Renderers;
 namespace TicTacToe.States;
 internal class PlayState : IEngineState
 {
-    private readonly PlayRenderer _renderer;
     private readonly GameGrid _gameGrid;
+    private readonly PlayRenderer _renderer;
+    private readonly WinnerChecker _winnerChecker;
 
     public PlayState()
     {
-        _gameGrid = new GameGrid(new Vector2(50,30));
+        _gameGrid = new GameGrid(new Vector2(50,20));
         _renderer = new PlayRenderer(_gameGrid);
+        _winnerChecker = new WinnerChecker(_gameGrid);
         _gameGrid.AddSubscriber(_renderer);
+        _gameGrid.AddSubscriber(_winnerChecker);
     }
     public void Activate()
     {
@@ -27,6 +30,7 @@ internal class PlayState : IEngineState
     public void Dispose()
     {
         _gameGrid.RemoveSubscriber(_renderer);
+        _gameGrid.RemoveSubscriber(_winnerChecker);
     }
 
     public void ProcessInput(ConsoleKeyInfo key)

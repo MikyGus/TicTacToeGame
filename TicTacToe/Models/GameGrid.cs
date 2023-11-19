@@ -1,6 +1,7 @@
 ﻿using TicTacToe.Abstract;
 using TicTacToe.Factories;
 using TicTacToe.Models.Components;
+using TicTacToe.Settings;
 
 namespace TicTacToe.Models;
 internal class GameGrid
@@ -10,20 +11,17 @@ internal class GameGrid
     private readonly HashSet<IGridSubscriber> _gridSubscribers;
     private readonly PlayerTurnEngine _turnEngine;
     private readonly IPlayer _nullPlayer;
+    private readonly ConfigData _configuration;
 
     public Vector2 SizeOfGrid {  get; private set; }
 
-    public GameGrid(Vector2 sizeOfGrid)
+    public GameGrid()
     {
-        SizeOfGrid = sizeOfGrid;
+        _configuration = Program.Configuration.Data();
+        SizeOfGrid = _configuration.Grid.GridSize;
         _cells = new CellEntity[SizeOfGrid.X, SizeOfGrid.Y];
         _gridSubscribers = new HashSet<IGridSubscriber>();
-        _turnEngine = new PlayerTurnEngine(
-            new List<IPlayer>
-            {
-                new Player("Player 1", 'X', ConsoleColor.Blue),
-                new Player("Player 2", 'O', ConsoleColor.Yellow)
-            });
+        _turnEngine = new PlayerTurnEngine(_configuration.Player.ActivePlayers);
         _nullPlayer = new Player("No player found", ' ', ConsoleColor.Black);
     }
 

@@ -34,7 +34,6 @@ internal class StateEngine
 
     /// <summary>
     /// Switch one state for another.
-    /// Mainly used to switch player or if SettingState need many pages
     /// </summary>
     /// <param name="state">The state to replace the current one with</param>
     public void SwitchState(IEngineState state)

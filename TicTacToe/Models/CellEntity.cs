@@ -1,5 +1,4 @@
 ﻿using TicTacToe.Abstract;
-using TicTacToe.Models.Components;
 
 namespace TicTacToe.Models;
 internal class CellEntity

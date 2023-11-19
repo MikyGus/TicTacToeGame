@@ -12,7 +12,7 @@ internal class PlayState : IEngineState
 
     public PlayState()
     {
-        _gameGrid = new GameGrid(new Vector2(50,20));
+        _gameGrid = new GameGrid();
         _renderer = new PlayRenderer(_gameGrid);
         _winnerChecker = new WinnerChecker(_gameGrid);
         _gameGrid.AddSubscriber(_renderer);

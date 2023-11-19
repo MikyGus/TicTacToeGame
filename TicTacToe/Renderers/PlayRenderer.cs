@@ -1,6 +1,7 @@
 ﻿using TicTacToe.Abstract;
 using TicTacToe.Models;
 using TicTacToe.Models.Components;
+using TicTacToe.Settings;
 
 namespace TicTacToe.Renderers;
 internal class PlayRenderer : IGridSubscriber
@@ -8,19 +9,14 @@ internal class PlayRenderer : IGridSubscriber
     private readonly GameGrid _gameGrid;
     private readonly SpriteComponent[,] _spriteBuffer;
     private readonly SpriteComponent _emptySpriteComponent;
+    private readonly ConfigData _config;
 
-    private readonly Vector2 _positionOffset;
-    private readonly Vector2 _borderOffset;
-    private readonly Vector2 _borderSize;
     public PlayRenderer(GameGrid gameGrid)
     {
+        _config = Program.Configuration.Data();
         _gameGrid = gameGrid;
-        _spriteBuffer = new SpriteComponent[_gameGrid.SizeOfGrid.X, _gameGrid.SizeOfGrid.Y];
+        _spriteBuffer = new SpriteComponent[_config.Grid.GridSize.X, _config.Grid.GridSize.Y];
         _emptySpriteComponent = new SpriteComponent() { Sprite = ' ', Parent = null, SpriteColor = ConsoleColor.Black };
-
-        _borderOffset = new(1,1);
-        _positionOffset = _borderOffset + new Vector2(1, 1);
-        _borderSize = _gameGrid.SizeOfGrid + new Vector2(2,2);
 
         foreach (CellEntity cell in _gameGrid.Cells())
         {
@@ -36,7 +32,7 @@ internal class PlayRenderer : IGridSubscriber
         Console.Clear();
         Console.WriteLine("Play State");
 
-        ConsoleDraw.Border(_borderOffset, _borderSize, _gameGrid.CurrentPlayer().SpriteColor);
+        ConsoleDraw.Border(_config.Grid.BorderStartPositionTopLeft, _config.Grid.BorderSize, _gameGrid.CurrentPlayer().SpriteColor);
         DrawAllSprites();
     }
 
@@ -49,7 +45,7 @@ internal class PlayRenderer : IGridSubscriber
 
     public void OnCellSet(Vector2 position, SpriteComponent spriteComponent)
     {
-        ConsoleDraw.WriteAtPosition(position + _positionOffset, spriteComponent, ConsoleColor.Gray);
+        ConsoleDraw.WriteAtPosition(position + _config.Grid.GridOffset, spriteComponent, ConsoleColor.Gray);
         _spriteBuffer[position.X, position.Y] = spriteComponent;
 
         DrawAllMaySetMarkers();
@@ -57,12 +53,10 @@ internal class PlayRenderer : IGridSubscriber
 
     public void OnNextPlayer(IPlayer oldPlayer, IPlayer newPlayer)
     {
-        ConsoleDraw.Border(_borderOffset, _borderSize, _gameGrid.CurrentPlayer().SpriteColor);
+        ConsoleDraw.Border(_config.Grid.BorderStartPositionTopLeft, _config.Grid.BorderSize, _gameGrid.CurrentPlayer().SpriteColor);
         DrawAllMaySetMarkers();
         DrawMarkerAtPosition(_gameGrid.CurrentPlayer().MarkerPosition);
     }
-
-
 
     private void DrawMarkerAtPosition(Vector2 position)
     {
@@ -70,7 +64,7 @@ internal class PlayRenderer : IGridSubscriber
         var spriteComponent = _spriteBuffer[position.X, position.Y] is not null
             ? _spriteBuffer[position.X, position.Y]
             : _emptySpriteComponent;
-        ConsoleDraw.WriteAtPosition(position + _positionOffset, spriteComponent, color);
+        ConsoleDraw.WriteAtPosition(position + _config.Grid.GridOffset, spriteComponent, color);
     }
 
     private void ClearMarkerAtPosition(Vector2 position)
@@ -78,14 +72,14 @@ internal class PlayRenderer : IGridSubscriber
         var spriteComponent = _spriteBuffer[position.X, position.Y] is not null
             ? _spriteBuffer[position.X, position.Y]
             : _emptySpriteComponent;
-        ConsoleDraw.WriteAtPosition(position + _positionOffset, spriteComponent, ConsoleColor.Gray);
+        ConsoleDraw.WriteAtPosition(position + _config.Grid.GridOffset, spriteComponent, ConsoleColor.Gray);
     }
 
     private void DrawAllSprites()
     {
         foreach (SpriteComponent sprite in _spriteBuffer)
             if (sprite is not null)
-                ConsoleDraw.WriteAtPosition(sprite.Parent.Position + _positionOffset, sprite, ConsoleColor.Gray);
+                ConsoleDraw.WriteAtPosition(sprite.Parent.Position + _config.Grid.GridOffset, sprite, ConsoleColor.Gray);
 
         DrawAllMaySetMarkers();
 
@@ -95,10 +89,6 @@ internal class PlayRenderer : IGridSubscriber
     private void DrawAllMaySetMarkers()
     {
         foreach (MaySetMarkerComponent component in _gameGrid.GetAllMaySetMarkerComponents())
-            ConsoleDraw.WriteBackgroundAtPosition(component.Parent.Position + _positionOffset, component);
+            ConsoleDraw.WriteBackgroundAtPosition(component.Parent.Position + _config.Grid.GridOffset, component);
     }
-
-
-
-
 }

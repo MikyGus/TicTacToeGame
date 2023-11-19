@@ -16,6 +16,9 @@ internal class Vector2 : IEquatable<Vector2>
     public static Vector2 operator -(Vector2 v1, Vector2 v2)
         => new(v1.X - v2.X, v1.Y - v2.Y);
 
+    public static Vector2 operator *(Vector2 v1, int i)
+        => new(v1.X * i, v1.Y * i);
+
     public bool Equals(Vector2 other)
     {
         if (other is null)

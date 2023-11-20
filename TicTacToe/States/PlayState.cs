@@ -8,19 +8,23 @@ internal class PlayState : IEngineState
 {
     private readonly GameGrid _gameGrid;
     private readonly PlayRenderer _renderer;
+    private readonly TopBarRenderer _topBarRenderer;
     private readonly WinnerChecker _winnerChecker;
 
     public PlayState()
     {
         _gameGrid = new GameGrid();
         _renderer = new PlayRenderer(_gameGrid);
+        _topBarRenderer = new TopBarRenderer(_gameGrid);
         _winnerChecker = new WinnerChecker(_gameGrid);
         _gameGrid.AddSubscriber(_renderer);
+        _gameGrid.AddSubscriber(_topBarRenderer);
         _gameGrid.AddSubscriber(_winnerChecker);
     }
     public void Activate()
     {
         _renderer.RenderAll();
+        _topBarRenderer.RenderAll();
     }
 
     public void Deactivate()
@@ -30,6 +34,7 @@ internal class PlayState : IEngineState
     public void Dispose()
     {
         _gameGrid.RemoveSubscriber(_renderer);
+        _gameGrid.RemoveSubscriber(_topBarRenderer);
         _gameGrid.RemoveSubscriber(_winnerChecker);
     }
 

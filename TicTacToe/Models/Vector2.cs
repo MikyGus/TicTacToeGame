@@ -45,4 +45,6 @@ internal class Vector2 : IEquatable<Vector2>
 
     public override int GetHashCode() => HashCode.Combine(X, Y);
 
+    public Vector2 Duplicate() => new(X, Y);
+
 }

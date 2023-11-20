@@ -49,7 +49,7 @@ internal class WinnerChecker : IGridSubscriber
         {
             foreach (Vector2 pos in winnerPositions)
                 ConsoleDraw.WriteAtPosition(pos + _config.Grid.GridOffset, player.Sprite.ToString(), player.SpriteColor, ConsoleColor.Green);
-            Program.GameEngine.SwitchState(new PlayerWonState());
+            Program.GameEngine.SwitchState(new PlayerWonState(player));
         }
     }
 

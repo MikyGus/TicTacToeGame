@@ -17,8 +17,9 @@ internal class Program
         Configuration = new Configuration();
         Configuration.Configure(c =>
         {
-            c.Grid.GridSize = new Vector2(10,10);
+            c.Grid.GridSize = new Vector2(55,20);
         });
+
         GameEngine = new StateEngine();
         GameEngine.PushState(new MainMenuState());
 

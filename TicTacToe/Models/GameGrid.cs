@@ -1,4 +1,5 @@
 ﻿using TicTacToe.Abstract;
+using TicTacToe.Extensions;
 using TicTacToe.Factories;
 using TicTacToe.Models.Components;
 using TicTacToe.Settings;

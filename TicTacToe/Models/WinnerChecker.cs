@@ -1,5 +1,4 @@
 ﻿using TicTacToe.Abstract;
-using TicTacToe.Factories;
 using TicTacToe.Models.Components;
 using TicTacToe.Renderers;
 using TicTacToe.Settings;
@@ -26,22 +25,22 @@ internal class WinnerChecker : IGridSubscriber
             throw new ArgumentNullException();
 
         var horizontalMatches = CheckForWinner(position, player,
-            p => p += Vector2Factory.RIGHT, p => p += Vector2Factory.LEFT).ToList();
+            p => p += Vector2.RIGHT, p => p += Vector2.LEFT).ToList();
         if (horizontalMatches.Count >= _config.WinConditions.MarkersInRow)
             winnerPositions.AddRange(horizontalMatches);
 
         var longitudeMatches = CheckForWinner(position, player,
-            p => p += Vector2Factory.UP, p => p += Vector2Factory.DOWN).ToList();
+            p => p += Vector2.UP, p => p += Vector2.DOWN).ToList();
         if (longitudeMatches.Count >= _config.WinConditions.MarkersInRow)
             winnerPositions.AddRange(longitudeMatches);
 
         var slashMatches = CheckForWinner(position, player,
-            p => p += Vector2Factory.RIGHT_UP, p => p += Vector2Factory.LEFT_DOWN).ToList();
+            p => p += Vector2.RIGHT_UP, p => p += Vector2.LEFT_DOWN).ToList();
         if (slashMatches.Count >= _config.WinConditions.MarkersInRow)
             winnerPositions.AddRange(slashMatches);
 
         var backslashMatches = CheckForWinner(position, player,
-            p => p += Vector2Factory.LEFT_UP, p => p += Vector2Factory.RIGHT_DOWN).ToList();
+            p => p += Vector2.LEFT_UP, p => p += Vector2.RIGHT_DOWN).ToList();
         if (backslashMatches.Count >= _config.WinConditions.MarkersInRow)
             winnerPositions.AddRange(backslashMatches);
 

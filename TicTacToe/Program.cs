@@ -18,6 +18,7 @@ internal class Program
         Configuration.Configure(c =>
         {
             c.Grid.GridSize = new Vector2(55,20);
+            c.Player.ActivePlayerCount = 4;
         });
 
         GameEngine = new StateEngine();

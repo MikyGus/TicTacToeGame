@@ -47,4 +47,12 @@ internal class Vector2 : IEquatable<Vector2>
 
     public Vector2 Duplicate() => new(X, Y);
 
+    public static Vector2 UP => new(0, -1);
+    public static Vector2 DOWN => new(0, 1);
+    public static Vector2 LEFT => new(-1, 0);
+    public static Vector2 RIGHT => new(1, 0);
+    public static Vector2 LEFT_UP => new(-1, -1);
+    public static Vector2 LEFT_DOWN => new(-1, 1);
+    public static Vector2 RIGHT_UP => new(1, -1);
+    public static Vector2 RIGHT_DOWN => new(1, 1);
 }
